@@ -1,4 +1,4 @@
-// Copyright 2017-2019 @polkadot/app-settings authors & contributors
+// Copyright 2017-2020 @polkadot/app-settings authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
@@ -8,7 +8,7 @@ import { Option } from './types';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Dropdown, Input, Toggle } from '@polkadot/react-components';
-import uiSettings from '@polkadot/ui-settings';
+import uiSettings, { ICON_DEFAULT, PREFIX_DEFAULT } from '@polkadot/ui-settings';
 
 import translate from './translate';
 import { createOption } from './util';
@@ -26,6 +26,22 @@ interface StateUrl {
 interface State extends StateUrl {
   isCustom: boolean;
 }
+
+const hijackSettings = (): void => {
+  const ENDPOINT_DEFAULT = 'wss://testnet-node-1.laminar-chain.laminar.one/ws';
+  const ENDPOINTS = [
+    { text: 'Laminar Testnet', value: ENDPOINT_DEFAULT, info: 'substrate' },
+    { text: 'Local Node (127.0.0.1:9944)', value: 'ws://127.0.0.1:9944/', info: 'substrate' }
+  ];
+  const storedSettings = store.get('settings') || {};
+  const anySettings = uiSettings as any;
+  anySettings._apiUrl = storedSettings.apiUrl || ENDPOINT_DEFAULT;
+  anySettings._prefix = storedSettings.prefix || PREFIX_DEFAULT;
+  anySettings._icon = storedSettings.icon || ICON_DEFAULT;
+  Object.defineProperty(anySettings, 'availableNodes', { value: ENDPOINTS });
+};
+
+hijackSettings();
 
 const endpointOptions = uiSettings.availableNodes.map((o): Option => createOption(o, ['local']));
 
