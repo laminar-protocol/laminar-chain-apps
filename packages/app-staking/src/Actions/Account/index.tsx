@@ -3,7 +3,6 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { DerivedBalances, DerivedStakingAccount, DerivedStakingOverview, DerivedHeartbeats } from '@polkadot/api-derive/types';
-import { I18nProps } from '@polkadot/react-components/types';
 import { AccountId, Exposure, StakingLedger, ValidatorPrefs } from '@polkadot/types/interfaces';
 import { Codec, ITuple } from '@polkadot/types/types';
 
@@ -13,7 +12,7 @@ import { AddressInfo, AddressMini, AddressSmall, Button, Menu, Popup, TxButton }
 import { useAccounts, useApi, useCall, useToggle } from '@polkadot/react-hooks';
 import { u8aConcat, u8aToHex } from '@polkadot/util';
 
-import translate from '../../translate';
+import { useTranslation } from '../../translate';
 import BondExtra from './BondExtra';
 import InjectKeys from './InjectKeys';
 import Nominate from './Nominate';
@@ -22,11 +21,13 @@ import SetRewardDestination from './SetRewardDestination';
 import SetSessionKey from './SetSessionKey';
 import Unbond from './Unbond';
 import Validate from './Validate';
+import useInactives from './useInactives';
 
 type ValidatorInfo = ITuple<[ValidatorPrefs, Codec]>;
 
-interface Props extends I18nProps {
+interface Props {
   allStashes?: string[];
+  className?: string;
   isOwnStash: boolean;
   next: string[];
   onUpdateType: (stashId: string, type: 'validator' | 'nominator' | 'started' | 'other') => void;
@@ -86,13 +87,15 @@ function getStakeState (allAccounts: string[], allStashes: string[] | undefined,
   };
 }
 
-function Account ({ allStashes, className, isOwnStash, next, onUpdateType, stakingOverview, stashId, t }: Props): React.ReactElement<Props> {
+function Account ({ allStashes, className, isOwnStash, next, onUpdateType, stakingOverview, stashId }: Props): React.ReactElement<Props> {
+  const { t } = useTranslation();
   const { api, isSubstrateV2 } = useApi();
   const { allAccounts } = useAccounts();
   const validateInfo = useCall<ValidatorInfo>(api.query.staking.validators, [stashId]);
   const balancesAll = useCall<DerivedBalances>(api.derive.balances.all as any, [stashId]);
   const stakingAccount = useCall<DerivedStakingAccount>(api.derive.staking.account as any, [stashId]);
   const [{ controllerId, destination, hexSessionIdQueue, hexSessionIdNext, isLoading, isOwnController, isStashNominating, isStashValidating, nominees, sessionIds, validatorPrefs }, setStakeState] = useState<StakeState>({ controllerId: null, destination: 0, hexSessionIdNext: null, hexSessionIdQueue: null, isLoading: true, isOwnController: false, isStashNominating: false, isStashValidating: false, sessionIds: [] });
+  const inactives = useInactives(stashId, nominees);
   const [isBondExtraOpen, toggleBondExtra] = useToggle();
   const [isInjectOpen, toggleInject] = useToggle();
   const [isNominateOpen, toggleNominate] = useToggle();
@@ -214,17 +217,32 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
         : (
           <td>
             {isStashNominating && nominees && (
-              <details>
-                <summary>{t('Nominating ({{count}})', { replace: { count: nominees.length } })}</summary>
-                {nominees.map((nomineeId, index): React.ReactNode => (
-                  <AddressMini
-                    key={index}
-                    value={nomineeId}
-                    withBalance={false}
-                    withBonded
-                  />
-                ))}
-              </details>
+              <>
+                <details>
+                  <summary>{t('All Nominations ({{count}})', { replace: { count: nominees.length } })}</summary>
+                  {nominees.map((nomineeId, index): React.ReactNode => (
+                    <AddressMini
+                      key={index}
+                      value={nomineeId}
+                      withBalance={false}
+                      withBonded
+                    />
+                  ))}
+                </details>
+                {inactives.length !== 0 && (
+                  <details>
+                    <summary>{t('Inactive nominations ({{count}})', { replace: { count: inactives.length } })}</summary>
+                    {inactives.map((nomineeId, index): React.ReactNode => (
+                      <AddressMini
+                        key={index}
+                        value={nomineeId}
+                        withBalance={false}
+                        withBonded
+                      />
+                    ))}
+                  </details>
+                )}
+              </>
             )}
           </td>
         )
@@ -346,7 +364,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                       disabled={!isOwnController}
                       onClick={toggleNominate}
                     >
-                      {t('Change nominee(s)')}
+                      {t('Set nominees')}
                     </Menu.Item>
                   }
                   {!isStashNominating && isSubstrateV2 &&
@@ -364,16 +382,14 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
   );
 }
 
-export default translate(
-  styled(Account)`
-    .ui--Button-Group {
-      display: inline-block;
-      margin-right: 0.25rem;
-      vertical-align: inherit;
-    }
+export default styled(Account)`
+  .ui--Button-Group {
+    display: inline-block;
+    margin-right: 0.25rem;
+    vertical-align: inherit;
+  }
 
-    .mini-nopad {
-      padding: 0;
-    }
-  `
-);
+  .mini-nopad {
+    padding: 0;
+  }
+`;
