@@ -19,7 +19,7 @@ import { QueueConsumer } from '@polkadot/react-components/Status/Context';
 import Queue from '@polkadot/react-components/Status/Queue';
 import { BlockAuthors, Events } from '@polkadot/react-query';
 
-import { types as flowchainTypes } from '@flowchain/types';
+import { types as laminarTypes } from '@laminar/types';
 
 import Apps from './Apps';
 
@@ -42,7 +42,7 @@ const wsEndpoint = _wsEndpoint.split('#')[0];
 
 console.log('WS endpoint=', wsEndpoint);
 
-registry.register(flowchainTypes);
+registry.register(laminarTypes);
 
 try {
   const types = store.get('types') || {};
