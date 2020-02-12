@@ -11,7 +11,7 @@ import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import { Api } from '@polkadot/react-api';
+import { Api, registry } from '@polkadot/react-api';
 import Queue from '@polkadot/react-components/Status/Queue';
 import { BlockAuthors, Events } from '@polkadot/react-query';
 import settings from '@polkadot/ui-settings';
