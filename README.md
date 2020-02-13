@@ -1,14 +1,9 @@
-[![polkadotjs](https://img.shields.io/badge/polkadot-js-orange?style=flat-square)](https://polkadot.js.org)
-![license](https://img.shields.io/badge/License-Apache%202.0-blue?logo=apache&style=flat-square)
-[![npm](https://img.shields.io/npm/v/@polkadot/apps?logo=npm&style=flat-square)](https://www.npmjs.com/package/@polkadot/apps)
-[![beta](https://img.shields.io/npm/v/@polkadot/apps/beta?label=beta&logo=npm&style=flat-square)](https://www.npmjs.com/package/@polkadot/apps)
-[![maintainability](https://img.shields.io/codeclimate/maintainability-percentage/polkadot-js/apps?logo=code-climate&style=flat-square)](https://codeclimate.com/github/polkadot-js/apps)
+# LaminarChain Console
+A Portal into the LaminarChain. Provides a view and interaction layer from a browser.
 
-# @polkadot/apps
+This can be accessed as a hosted application via [https://laminar-protocol.github.io/laminar-chain-apps/](https://laminar-protocol.github.io/laminar-chain-apps).
 
-A Portal into the Polkadot and Substrate networks. Provides a view and interaction layer from a browser.
-
-This can be accessed as a hosted application via [https://polkadot.js.org/apps/](https://polkadot.js.org/apps/) to explorer any of the supported Polkadot and Substrate chains
+This is a fork from [@polkadot/apps](https://github.com/polkadot-js/apps).
 
 ## overview
 
@@ -47,23 +42,3 @@ To get started -
 4. Install the dependencies by running `yarn`
 5. Ready! Now you can launch the UI (assuming you have a local Polkadot Node running), via `yarn run start`
 6. Access the UI via [http://localhost:3000](http://localhost:3000)
-
-## I want to code around
-
-There is a base template available [app-123code](packages/app-123code/) that acts as a simple starting point for adding additional apps to the UI. Alternatively if you just want some place where you can write some code, it does the trick.
-
-While it is hidden from the sidebar, it is accessible via [http://127.0.0.1:3000/#/123code](http://127.0.0.1:3000/#/123code)
-
-Be sure to follow the [app-123code/README.md](packages/app-123code/README.md) instructions.
-
-## Docker
-
-You can run a docker container via -
-
-  docker run --rm -it --name polkadot-ui -p 80:80 chevdor/polkadot-ui:latest
-
-To build a docker container containing local changes -
-
-  docker build -t chevdor/polkadot-ui:latest .
-
-When using these Docker commands, you can access the UI via http://localhost:80 (or just http://localhost)
