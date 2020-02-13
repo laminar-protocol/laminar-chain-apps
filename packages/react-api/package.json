@@ -34,6 +34,7 @@
     "@polkadot/api": "^1.2.0-beta.9",
     "@polkadot/extension-dapp": "^0.21.1",
     "edgeware-node-types": "^1.1.0",
-    "rxjs-compat": "^6.5.3"
+    "rxjs-compat": "^6.5.3",
+    "@laminar/api": "beta"
   }
 }

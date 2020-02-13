@@ -40,6 +40,7 @@
     "semantic-ui-css": "^2.3.1",
     "semantic-ui-react": "^0.88.1",
     "store": "^2.0.12",
-    "styled-theming": "^2.2.0"
+    "styled-theming": "^2.2.0",
+    "@orml/jsonrpc": "beta"
   }
 }
