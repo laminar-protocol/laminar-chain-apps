@@ -2,11 +2,11 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import React, { useContext } from 'react';
+import React, { Suspense, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import routing from '@polkadot/apps-routing';
-import { StatusContext } from '@polkadot/react-components';
+import { ErrorBoundary, StatusContext } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks';
 
 import Status from './Status';
@@ -18,10 +18,11 @@ interface Props {
 }
 
 const unknown = {
+  Component: NotFound,
   display: {
     needsApi: undefined
   },
-  Component: NotFound,
+  isIgnored: false,
   name: ''
 };
 
@@ -41,11 +42,15 @@ function Content ({ className }: Props): React.ReactElement<Props> {
         ? <div className='connecting'>{t('Waiting for API to be connected and ready.')}</div>
         : (
           <>
-            <Component
-              basePath={`/${name}`}
-              location={location}
-              onStatusChange={queueAction}
-            />
+            <Suspense fallback='...'>
+              <ErrorBoundary>
+                <Component
+                  basePath={`/${name}`}
+                  location={location}
+                  onStatusChange={queueAction}
+                />
+              </ErrorBoundary>
+            </Suspense>
             <Status
               queueAction={queueAction}
               stqueue={stqueue}

@@ -2,15 +2,13 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { CallFunction } from '@polkadot/types/types';
+import { SubmittableExtrinsicFunction } from '@polkadot/api/types';
 import { DropdownOptions } from '../util/types';
-
-import './InputExtrinsic.css';
 
 import React, { useState } from 'react';
 import { useApi } from '@polkadot/react-hooks';
 
-import Labelled from '../Labelled';
+import LinkedWrapper from './LinkedWrapper';
 import SelectMethod from './SelectMethod';
 import SelectSection from './SelectSection';
 import methodOptions from './options/method';
@@ -18,13 +16,13 @@ import sectionOptions from './options/section';
 
 interface Props {
   className?: string;
-  defaultValue: CallFunction;
+  defaultValue: SubmittableExtrinsicFunction<'promise'>;
   help?: React.ReactNode;
   isDisabled?: boolean;
   isError?: boolean;
   isPrivate?: boolean;
   label: React.ReactNode;
-  onChange: (value: CallFunction) => void;
+  onChange: (value: SubmittableExtrinsicFunction<'promise'>) => void;
   style?: any;
   withLabel?: boolean;
 }
@@ -33,15 +31,15 @@ export default function InputExtrinsic ({ className, defaultValue, help, label, 
   const { api } = useApi();
   const [optionsMethod, setOptionsMethod] = useState<DropdownOptions>(methodOptions(api, defaultValue.section));
   const [optionsSection] = useState<DropdownOptions>(sectionOptions(api));
-  const [value, setValue] = useState<CallFunction>((): CallFunction => defaultValue);
+  const [value, setValue] = useState<SubmittableExtrinsicFunction<'promise'>>((): SubmittableExtrinsicFunction<'promise'> => defaultValue);
 
-  const _onKeyChange = (newValue: CallFunction): void => {
+  const _onKeyChange = (newValue: SubmittableExtrinsicFunction<'promise'>): void => {
     if (value.section === newValue.section && value.method === newValue.method) {
       return;
     }
 
     // set this via callback, since the we are setting a function (aletrnatively... we have issues)
-    setValue((): CallFunction => newValue);
+    setValue((): SubmittableExtrinsicFunction<'promise'> => newValue);
     onChange(newValue);
   };
   const _onSectionChange = (section: string): void => {
@@ -56,31 +54,26 @@ export default function InputExtrinsic ({ className, defaultValue, help, label, 
   };
 
   return (
-    <div
+    <LinkedWrapper
       className={className}
+      help={help}
+      label={label}
       style={style}
+      withLabel={withLabel}
     >
-      <Labelled
-        help={help}
-        label={label}
-        withLabel={withLabel}
-      >
-        <div className=' ui--DropdownLinked ui--row'>
-          <SelectSection
-            className='small'
-            onChange={_onSectionChange}
-            options={optionsSection}
-            value={value}
-          />
-          <SelectMethod
-            api={api}
-            className='large'
-            onChange={_onKeyChange}
-            options={optionsMethod}
-            value={value}
-          />
-        </div>
-      </Labelled>
-    </div>
+      <SelectSection
+        className='small'
+        onChange={_onSectionChange}
+        options={optionsSection}
+        value={value}
+      />
+      <SelectMethod
+        api={api}
+        className='large'
+        onChange={_onKeyChange}
+        options={optionsMethod}
+        value={value}
+      />
+    </LinkedWrapper>
   );
 }

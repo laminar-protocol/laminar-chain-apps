@@ -5,7 +5,7 @@
 import BN from 'bn.js';
 import React, { useState } from 'react';
 import { Button, InputAddress, InputBalance, Modal, TxButton } from '@polkadot/react-components';
-import { useAccounts } from '@polkadot/react-hooks';
+import { useToggle } from '@polkadot/react-hooks';
 
 import { useTranslation } from '../translate';
 
@@ -15,18 +15,10 @@ interface Props {
 
 export default function Propose ({ className }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
-  const { hasAccounts } = useAccounts();
   const [accountId, setAccountId] = useState<string | null>(null);
   const [beneficiary, setBeneficiary] = useState<string | null>(null);
-  const [isProposeOpen, setIsProposeOpen] = useState(false);
+  const [isProposeOpen, togglePropose] = useToggle();
   const [value, setValue] = useState<BN | undefined>();
-
-  if (!hasAccounts) {
-    return null;
-  }
-
-  const _togglePropose = (): void => setIsProposeOpen(!isProposeOpen);
-
   const hasValue = value?.gtn(0);
 
   return (
@@ -35,7 +27,6 @@ export default function Propose ({ className }: Props): React.ReactElement<Props
         <Modal
           className={className}
           header={t('Submit treasury proposal')}
-          open
           size='small'
         >
           <Modal.Content>
@@ -61,26 +52,17 @@ export default function Propose ({ className }: Props): React.ReactElement<Props
               onChange={setValue}
             />
           </Modal.Content>
-          <Modal.Actions>
-            <Button.Group>
-              <Button
-                icon='cancel'
-                isNegative
-                label={t('Cancel')}
-                onClick={_togglePropose}
-              />
-              <Button.Or />
-              <TxButton
-                accountId={accountId}
-                icon='add'
-                isDisabled={!accountId || !hasValue}
-                isPrimary
-                label={t('Submit proposal')}
-                onClick={_togglePropose}
-                params={[value, beneficiary]}
-                tx='treasury.proposeSpend'
-              />
-            </Button.Group>
+          <Modal.Actions onCancel={togglePropose}>
+            <TxButton
+              accountId={accountId}
+              icon='add'
+              isDisabled={!accountId || !hasValue}
+              isPrimary
+              label={t('Submit proposal')}
+              onStart={togglePropose}
+              params={[value, beneficiary]}
+              tx='treasury.proposeSpend'
+            />
           </Modal.Actions>
         </Modal>
       )}
@@ -88,7 +70,7 @@ export default function Propose ({ className }: Props): React.ReactElement<Props
         icon='check'
         isPrimary
         label={t('Submit proposal')}
-        onClick={_togglePropose}
+        onClick={togglePropose}
       />
     </>
   );
