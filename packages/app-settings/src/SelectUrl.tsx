@@ -10,6 +10,7 @@ import store from 'store';
 import { Dropdown, Input, Toggle } from '@polkadot/react-components';
 import uiSettings, { ICON_DEFAULT, PREFIX_DEFAULT } from '@polkadot/ui-settings';
 
+import { availableEndpoints } from './available';
 import { useTranslation } from './translate';
 import { createOption } from './util';
 
@@ -26,22 +27,6 @@ interface StateUrl {
 interface State extends StateUrl {
   isCustom: boolean;
 }
-
-const hijackSettings = (): void => {
-  const ENDPOINT_DEFAULT = 'wss://testnet-node-1.laminar-chain.laminar.one/ws';
-  const ENDPOINTS = [
-    { text: 'Laminar Testnet', value: ENDPOINT_DEFAULT, info: 'substrate' },
-    { text: 'Local Node (127.0.0.1:9944)', value: 'ws://127.0.0.1:9944/', info: 'substrate' }
-  ];
-  const storedSettings = store.get('settings') || {};
-  const anySettings = uiSettings as any;
-  anySettings._apiUrl = storedSettings.apiUrl || ENDPOINT_DEFAULT;
-  anySettings._prefix = storedSettings.prefix || PREFIX_DEFAULT;
-  anySettings._icon = storedSettings.icon || ICON_DEFAULT;
-  Object.defineProperty(anySettings, 'availableNodes', { value: ENDPOINTS });
-};
-
-hijackSettings();
 
 // check the validity of the url
 function isValidUrl (url: string): boolean {
@@ -65,7 +50,7 @@ function makeUrl (_url: string): StateUrl {
 // validation on-top of the values retrieved
 function getInitialState (): State {
   const url = uiSettings.get().apiUrl;
-  const isCustom = uiSettings.availableNodes.reduce((isCustom: boolean, { value }): boolean => {
+  const isCustom = availableEndpoints.reduce((isCustom: boolean, { value }): boolean => {
     return isCustom && value !== url;
   }, true);
   const isValid = isValidUrl(url);
@@ -80,7 +65,7 @@ function SelectUrl ({ className, onChange }: Props): React.ReactElement<Props> {
   const help = t('Select the remote endpoint, either from the dropdown on manual entered via the custom toggle');
   const label = t('remote node/endpoint to connect to');
   const translatedEndpoints = useMemo(() => {
-    return uiSettings.availableNodes.map((option): Option => createOption(t, option, ['local']));
+    return availableEndpoints.map((option): Option => createOption(t, option, ['local']));
   }, [t]);
 
   useEffect((): void => {
@@ -95,7 +80,7 @@ function SelectUrl ({ className, onChange }: Props): React.ReactElement<Props> {
       ...makeUrl(
         isCustom
           ? info.url
-          : uiSettings.availableNodes[0].value as string
+          : availableEndpoints[0].value as string
       ),
       isCustom
     });

@@ -15,6 +15,7 @@ import uiSettings from '@polkadot/ui-settings';
 import ApiSigner from '@polkadot/react-signer/ApiSigner';
 import { createType } from '@polkadot/types';
 import { formatBalance, isTestChain } from '@polkadot/util';
+import { setSS58Format } from '@polkadot/util-crypto';
 import addressDefaults from '@polkadot/util-crypto/address/defaults';
 
 import { options } from '@laminar/api';
@@ -76,6 +77,12 @@ async function loadOnReady (api: ApiPromise): Promise<State> {
 
   console.log('api: found chain', systemChain, JSON.stringify(properties));
 
+  // explicitly override the ss58Format as specified
+  registry.setChainProperties(createType(registry, 'ChainProperties', { ...properties, ss58Format }));
+
+  // FIXME This should be removed (however we have some hanging bits, e.g. vanity)
+  setSS58Format(ss58Format);
+
   // first setup the UI helpers
   formatBalance.setDefaults({
     decimals: tokenDecimals,
@@ -85,7 +92,6 @@ async function loadOnReady (api: ApiPromise): Promise<State> {
 
   // finally load the keyring
   keyring.loadAll({
-    addressPrefix: ss58Format,
     genesisHash: api.genesisHash,
     isDevelopment,
     ss58Format,
@@ -122,7 +128,7 @@ export default function Api ({ children, url }: Props): React.ReactElement<Props
     const provider = new WsProvider(url);
     const signer = new ApiSigner(queuePayload, queueSetTxStatus);
 
-    api = new ApiPromise(options({ provider, registry, signer, typesChain, typesSpec }));
+    api = new ApiPromise({ provider, registry, signer, typesChain, typesSpec });
 
     api.on('connected', (): void => setIsApiConnected(true));
     api.on('disconnected', (): void => setIsApiConnected(false));
