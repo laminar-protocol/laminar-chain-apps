@@ -128,7 +128,10 @@ export default function Api ({ children, url }: Props): React.ReactElement<Props
     const provider = new WsProvider(url);
     const signer = new ApiSigner(queuePayload, queueSetTxStatus);
 
-    api = new ApiPromise({ provider, registry, signer, typesChain, typesSpec });
+    const polkadotOptions = { provider, registry, signer, typesChain, typesSpec }
+    const laminarOptions = options(polkadotOptions)
+
+    api = new ApiPromise(laminarOptions);
 
     api.on('connected', (): void => setIsApiConnected(true));
     api.on('disconnected', (): void => setIsApiConnected(false));
