@@ -129,9 +129,9 @@ export default function Api ({ children, url }: Props): React.ReactElement<Props
     const signer = new ApiSigner(queuePayload, queueSetTxStatus);
 
     const polkadotOptions = { provider, registry, signer, typesChain, typesSpec }
-    const laminarOptions = options(polkadotOptions)
+    const laminarOptions = options(polkadotOptions as any)
 
-    api = new ApiPromise(laminarOptions);
+    api = new ApiPromise(laminarOptions as any);
 
     api.on('connected', (): void => setIsApiConnected(true));
     api.on('disconnected', (): void => setIsApiConnected(false));
