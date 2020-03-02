@@ -19,6 +19,8 @@ import { formatBalance, isTestChain } from '@polkadot/util';
 import { setSS58Format } from '@polkadot/util-crypto';
 import addressDefaults from '@polkadot/util-crypto/address/defaults';
 
+import { options } from '@laminar/api';
+
 import ApiContext from './ApiContext';
 import registry from './typeRegistry';
 
@@ -125,7 +127,7 @@ export default function Api ({ children, url }: Props): React.ReactElement<Props
     const provider = new WsProvider(url);
     const signer = new ApiSigner(queuePayload, queueSetTxStatus);
 
-    api = new ApiPromise({ provider, registry, signer, typesChain, typesSpec });
+    api = new ApiPromise(options({ provider, registry, signer, typesChain, typesSpec }));
 
     api.on('connected', (): void => setIsApiConnected(true));
     api.on('disconnected', (): void => setIsApiConnected(false));

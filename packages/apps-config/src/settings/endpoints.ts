@@ -6,39 +6,14 @@ import { Option } from './types';
 
 export default [
   {
-    info: 'kusama',
-    text: 'Kusama (Polkadot Canary, hosted by Parity)',
-    value: 'wss://kusama-rpc.polkadot.io/'
-  },
-  {
-    info: 'kusama',
-    text: 'Kusama (Polkadot Canary, hosted by Web3 Foundation)',
-    value: 'wss://cc3-5.kusama.network/'
-  },
-  {
-    info: 'westend',
-    text: 'Westend (Polkadot Testnet, hosted by Parity)',
-    value: 'wss://westend-rpc.polkadot.io'
-  },
-  {
-    info: 'edgeware',
-    text: 'Edgeware (Edgeware Mainnet, hosted by Commonwealth Labs)',
-    value: 'wss://mainnet1.edgewa.re'
-  },
-  {
-    info: 'edgeware',
-    text: 'Berlin (Edgeware Testnet, hosted by Commonwealth Labs)',
-    value: 'wss://berlin1.edgewa.re'
+    info: 'substrate',
+    text: 'Laminar Testnet 1',
+    value: 'wss://testnet-node-1.laminar-chain.laminar.one/ws'
   },
   {
     info: 'substrate',
-    text: 'Flaming Fir (Substrate Testnet, hosted by Parity)',
-    value: 'wss://substrate-rpc.parity.io/'
-  },
-  {
-    info: 'substrate',
-    text: 'Kulupu (Kulupu Mainnet, hosted by Kulupu)',
-    value: 'wss://rpc.kulupu.network/ws'
+    text: 'Laminar Testnet 2',
+    value: 'wss://node-6636393196323627008.jm.onfinality.io/ws?apikey=20cf0fa0-c7ee-4545-8227-4d488f71c6d2'
   },
   {
     info: 'local',

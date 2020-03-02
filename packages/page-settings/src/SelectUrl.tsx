@@ -8,7 +8,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { availableEndpoints } from '@polkadot/apps-config/settings';
 import { Dropdown, Input, Toggle } from '@polkadot/react-components';
-import uiSettings from '@polkadot/ui-settings';
+import uiSettings, { ICON_DEFAULT, PREFIX_DEFAULT } from '@polkadot/ui-settings';
 
 import { useTranslation } from './translate';
 import { createOption } from './util';
@@ -26,6 +26,23 @@ interface StateUrl {
 interface State extends StateUrl {
   isCustom: boolean;
 }
+
+const hijackSettings = (): void => {
+  const ENDPOINT_DEFAULT = 'wss://testnet-node-1.laminar-chain.laminar.one/ws';
+  const ENDPOINTS = [
+    { text: 'Laminar Testnet 1', value: ENDPOINT_DEFAULT, info: 'substrate' },
+    { text: 'Laminar Testnet 2', value: 'wss://node-6636393196323627008.jm.onfinality.io/ws?apikey=20cf0fa0-c7ee-4545-8227-4d488f71c6d2', info: 'substrate' },
+    { text: 'Local Node (127.0.0.1:9944)', value: 'ws://127.0.0.1:9944/', info: 'substrate' }
+  ];
+  const storedSettings = store.get('settings') || {};
+  const anySettings = uiSettings as any;
+  anySettings._apiUrl = storedSettings.apiUrl || ENDPOINT_DEFAULT;
+  anySettings._prefix = storedSettings.prefix || PREFIX_DEFAULT;
+  anySettings._icon = storedSettings.icon || ICON_DEFAULT;
+  Object.defineProperty(anySettings, 'availableNodes', { value: ENDPOINTS });
+};
+
+hijackSettings();
 
 // check the validity of the url
 function isValidUrl (url: string): boolean {
