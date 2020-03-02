@@ -41,6 +41,11 @@ export default [
     value: 'wss://rpc.kulupu.network/ws'
   },
   {
+    info: 'laminar',
+    text: 'laminar testnet',
+    value: 'wss://node-6636393196323627008.jm.onfinality.io/ws?apikey=20cf0fa0-c7ee-4545-8227-4d488f71c6d2'
+  },
+  {
     info: 'local',
     text: 'Local Node (Own, 127.0.0.1:9944)',
     value: 'ws://127.0.0.1:9944/'
