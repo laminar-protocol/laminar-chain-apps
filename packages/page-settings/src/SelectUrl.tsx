@@ -6,6 +6,7 @@ import { Option } from '@polkadot/apps-config/settings/types';
 
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import store from 'store';
 import { availableEndpoints } from '@polkadot/apps-config/settings';
 import { Dropdown, Input, Toggle } from '@polkadot/react-components';
 import uiSettings, { ICON_DEFAULT, PREFIX_DEFAULT } from '@polkadot/ui-settings';

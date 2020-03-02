@@ -89,7 +89,6 @@ function Apps ({ className }: Props): React.ReactElement<Props> {
         </Signer>
         <ConnectingOverlay />
         <AccountsOverlay />
-        {/* <UpgradeOverlay /> */}
       </div>
       <WarmUp />
     </>
