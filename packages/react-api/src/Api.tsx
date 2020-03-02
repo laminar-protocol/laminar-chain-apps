@@ -6,6 +6,7 @@ import { ApiState } from './types';
 
 import React, { useContext, useEffect, useState } from 'react';
 import ApiPromise from '@polkadot/api/promise';
+import { typesChain, typesSpec } from '@polkadot/apps-config/api';
 import { isWeb3Injected, web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { StatusContext } from '@polkadot/react-components/Status';
@@ -20,8 +21,6 @@ import addressDefaults from '@polkadot/util-crypto/address/defaults';
 
 import { options } from '@laminar/api';
 
-import typesChain from './overrides/chain';
-import typesSpec from './overrides/spec';
 import ApiContext from './ApiContext';
 import registry from './typeRegistry';
 
@@ -68,7 +67,7 @@ async function loadOnReady (api: ApiPromise): Promise<State> {
   const ss58Format = uiSettings.prefix === -1
     ? properties.ss58Format.unwrapOr(DEFAULT_SS58).toNumber()
     : uiSettings.prefix;
-  const tokenSymbol = properties.tokenSymbol.unwrapOr('DEV').toString();
+  const tokenSymbol = properties.tokenSymbol.unwrapOr(undefined)?.toString();
   const tokenDecimals = properties.tokenDecimals.unwrapOr(DEFAULT_DECIMALS).toNumber();
   const systemChain = _systemChain
     ? _systemChain.toString()
@@ -128,10 +127,7 @@ export default function Api ({ children, url }: Props): React.ReactElement<Props
     const provider = new WsProvider(url);
     const signer = new ApiSigner(queuePayload, queueSetTxStatus);
 
-    const polkadotOptions = { provider, registry, signer, typesChain, typesSpec }
-    const laminarOptions = options(polkadotOptions as any)
-
-    api = new ApiPromise(laminarOptions as any);
+    api = new ApiPromise(options({ provider, registry, signer, typesChain, typesSpec }));
 
     api.on('connected', (): void => setIsApiConnected(true));
     api.on('disconnected', (): void => setIsApiConnected(false));
