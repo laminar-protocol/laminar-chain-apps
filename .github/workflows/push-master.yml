@@ -37,7 +37,7 @@ jobs:
         GH_PAT: ${{ secrets.GH_PAT }}
         NPM_SKIP: true
       run: |
-        yarn install --frozen-lockfile
+        yarn install --immutable | grep -v 'YN0013'
         yarn polkadot-ci-ghact-build
         yarn polkadot-ci-ghact-docs
 
