@@ -16,7 +16,7 @@ interface Props {
   info?: DeriveSociety;
 }
 
-export default function Members ({ className, info }: Props): React.ReactElement<Props> {
+function Members ({ className, info }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const members = useCall<DeriveSocietyMember[]>(api.derive.society.members, []);
@@ -29,23 +29,22 @@ export default function Members ({ className, info }: Props): React.ReactElement
   }, [info, members]);
 
   return (
-    <div className={`overviewSection ${className}`}>
-      <h1>{t('members')}</h1>
-      {filtered.length
-        ? (
-          <Table>
-            <Table.Body>
-              {filtered.map((member): React.ReactNode => (
-                <Member
-                  key={member.accountId.toString()}
-                  value={member}
-                />
-              ))}
-            </Table.Body>
-          </Table>
-        )
-        : t('No active members')
-      }
-    </div>
+    <Table className={className}>
+      <Table.Head>
+        <th colSpan={3} className='start'><h1>{t('members')}</h1></th>
+        <th>{t('strikes')}</th>
+      </Table.Head>
+      <Table.Body empty={info && t('No active members')}>
+        {filtered.map((member): React.ReactNode => (
+          <Member
+            isHead={info?.head?.eq(member.accountId)}
+            key={member.accountId.toString()}
+            value={member}
+          />
+        ))}
+      </Table.Body>
+    </Table>
   );
 }
+
+export default React.memo(Members);

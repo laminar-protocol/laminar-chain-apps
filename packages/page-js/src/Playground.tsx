@@ -106,6 +106,7 @@ function Playground ({ className }: Props): React.ReactElement<Props> {
     setIsCustomExample((selected && selected.type === 'custom') || false);
     setOptions(options);
     setSelected(selected || snippets[0]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect((): void => {
@@ -238,7 +239,7 @@ function Playground ({ className }: Props): React.ReactElement<Props> {
   );
 }
 
-export default styled(Playground)`
+export default React.memo(styled(Playground)`
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -305,7 +306,7 @@ export default styled(Playground)`
     }
 
     .codeflask__lines {
-      background: #fafafa;
+      background: #f2f2f2;
       line-height: 18px;
       padding-top: 50px;
       z-index: 100;
@@ -334,4 +335,4 @@ export default styled(Playground)`
       margin: 0;
     }
   }
-`;
+`);

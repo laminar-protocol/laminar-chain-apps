@@ -15,29 +15,28 @@ interface Props {
   className?: string;
 }
 
-export default function Bids ({ className }: Props): React.ReactElement<Props> {
+function Bids ({ className }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const bids = useCall<Bid[]>(api.query.society.bids, []);
 
   return (
-    <div className={`overviewSection ${className}`}>
-      <h1>{t('bids')}</h1>
-      {bids?.length
-        ? (
-          <Table>
-            <Table.Body>
-              {bids.map((bid): React.ReactNode => (
-                <BidRow
-                  key={bid.who.toString()}
-                  value={bid}
-                />
-              ))}
-            </Table.Body>
-          </Table>
-        )
-        : t('No bids')
-      }
-    </div>
+    <Table className={className}>
+      <Table.Head>
+        <th className='start'><h1>{t('bids')}</h1></th>
+        <th>{t('kind')}</th>
+        <th>{t('value')}</th>
+      </Table.Head>
+      <Table.Body empty={bids && t('No bids')}>
+        {bids?.map((bid): React.ReactNode => (
+          <BidRow
+            key={bid.who.toString()}
+            value={bid}
+          />
+        ))}
+      </Table.Body>
+    </Table>
   );
 }
+
+export default React.memo(Bids);

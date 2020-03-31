@@ -19,7 +19,7 @@ interface Props extends OwnMembers {
   info?: DeriveSociety;
 }
 
-export default function Defender ({ className, info, isMember, ownMembers }: Props): React.ReactElement<Props> | null {
+function Defender ({ className, info, isMember, ownMembers }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
   const { api } = useApi();
   const votes = useCall<VoteType[]>(api.derive.society.members, [], {
@@ -34,24 +34,28 @@ export default function Defender ({ className, info, isMember, ownMembers }: Pro
   }
 
   return (
-    <div className={`overviewSection ${className}`}>
-      <h1>{t('defender')}</h1>
-      <Table>
-        <Table.Body>
-          <tr>
-            <td className='top'>
-              <AddressSmall value={info.defender} />
-            </td>
-            <VoteDisplay votes={votes} />
-            <td className='top together number'>
-              <DefenderVoting
-                isMember={isMember}
-                ownMembers={ownMembers}
-              />
-            </td>
-          </tr>
-        </Table.Body>
-      </Table>
-    </div>
+    <Table className={className}>
+      <Table.Head>
+        <th className='start'><h1>{t('defender')}</h1></th>
+        <th className='start'>{t('votes')}</th>
+        <th>&nbsp;</th>
+      </Table.Head>
+      <Table.Body>
+        <tr>
+          <td className='address all'>
+            <AddressSmall value={info.defender} />
+          </td>
+          <VoteDisplay votes={votes} />
+          <td className='button'>
+            <DefenderVoting
+              isMember={isMember}
+              ownMembers={ownMembers}
+            />
+          </td>
+        </tr>
+      </Table.Body>
+    </Table>
   );
 }
+
+export default React.memo(Defender);

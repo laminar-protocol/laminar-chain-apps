@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DerivedHeartbeats, DerivedStakingOverview } from '@polkadot/api-derive/types';
+import { DeriveHeartbeats, DeriveStakingOverview } from '@polkadot/api-derive/types';
 import { AppProps as Props } from '@polkadot/react-components/types';
 import { AccountId } from '@polkadot/types/interfaces';
 
@@ -12,7 +12,7 @@ import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { HelpOverlay } from '@polkadot/react-components';
 import Tabs from '@polkadot/react-components/Tabs';
-import { useCall, useAccounts, useApi } from '@polkadot/react-hooks';
+import { useAccounts, useApi, useCall, useOwnEraRewards } from '@polkadot/react-hooks';
 
 import basicMd from './md/basic.md';
 import Actions from './Actions';
@@ -20,9 +20,9 @@ import Overview from './Overview';
 import Summary from './Overview/Summary';
 import Query from './Query';
 import Targets from './Targets';
-import { MAX_SESSIONS } from './constants';
 import { useTranslation } from './translate';
-import useSessionRewards from './useSessionRewards';
+
+export { default as useCounter } from './useCounter';
 
 function reduceNominators (nominators: string[], additional: string[]): string[] {
   return nominators.concat(...additional.filter((nominator): boolean => !nominators.includes(nominator)));
@@ -33,22 +33,35 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
   const { api } = useApi();
   const { hasAccounts } = useAccounts();
   const { pathname } = useLocation();
-  const [next, setNext] = useState<string[]>([]);
-  const allStashes = useCall<string[]>(api.derive.staking.controllers, [], {
-    defaultValue: [],
-    transform: ([stashes]: [AccountId[]]): string[] =>
+  const { allRewards, rewardCount } = useOwnEraRewards();
+  const [next, setNext] = useState<string[] | undefined>();
+  const allStashes = useCall<string[]>(api.derive.staking.stashes, [], {
+    transform: (stashes: AccountId[]): string[] =>
       stashes.map((accountId): string => accountId.toString())
-  }) as string[];
-  const recentlyOnline = useCall<DerivedHeartbeats>(api.derive.imOnline?.receivedHeartbeats, []);
-  const stakingOverview = useCall<DerivedStakingOverview>(api.derive.staking.overview, []);
-  const sessionRewards = useSessionRewards(MAX_SESSIONS);
-  const hasQueries = hasAccounts && !!(api.query.imOnline?.authoredBlocks);
+  });
+  const recentlyOnline = useCall<DeriveHeartbeats>(api.derive.imOnline?.receivedHeartbeats, []);
+  const stakingOverview = useCall<DeriveStakingOverview>(api.derive.staking.overview, []);
   const [nominators, dispatchNominators] = useReducer(reduceNominators, [] as string[]);
+  const hasQueries = useMemo(
+    (): boolean =>
+      hasAccounts && !!(api.query.imOnline?.authoredBlocks) && !!(api.query.staking.activeEra),
+    [api, hasAccounts]
+  );
   const items = useMemo(() => [
     {
       isRoot: true,
       name: 'overview',
       text: t('Staking overview')
+    },
+    {
+      name: 'actions',
+      text: t('Account actions{{count}}', {
+        replace: {
+          count: rewardCount
+            ? ` (${rewardCount})`
+            : ''
+        }
+      })
     },
     {
       name: 'waiting',
@@ -59,21 +72,28 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
       text: t('Returns')
     },
     {
-      name: 'actions',
-      text: t('Account actions')
-    },
-    {
       hasParams: true,
       name: 'query',
       text: t('Validator stats')
     }
-  ], [t]);
+  ], [rewardCount, t]);
+  const hiddenTabs = useMemo(
+    (): string[] =>
+      !hasAccounts
+        ? ['actions', 'query']
+        : !hasQueries
+          ? ['returns', 'query']
+          : [],
+    [hasAccounts, hasQueries]
+  );
 
   useEffect((): void => {
-    stakingOverview && setNext(
-      allStashes.filter((address): boolean => !stakingOverview.validators.includes(address as any))
+    allStashes && stakingOverview && setNext(
+      allStashes.filter((address): boolean =>
+        !stakingOverview.validators.includes(address as any)
+      )
     );
-  }, [allStashes, stakingOverview?.validators]);
+  }, [allStashes, stakingOverview]);
 
   return (
     <main className={`staking--App ${className}`}>
@@ -81,13 +101,7 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
       <header>
         <Tabs
           basePath={basePath}
-          hidden={
-            hasAccounts
-              ? hasQueries
-                ? []
-                : ['query']
-              : ['actions', 'query']
-          }
+          hidden={hiddenTabs}
           items={items}
         />
       </header>
@@ -99,22 +113,32 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
       />
       <Switch>
         <Route path={[`${basePath}/query/:value`, `${basePath}/query`]}>
-          <Query sessionRewards={sessionRewards} />
+          <Query />
         </Route>
         <Route path={`${basePath}/returns`}>
-          <Targets sessionRewards={sessionRewards} />
+          <Targets />
+        </Route>
+        <Route path={`${basePath}/waiting`}>
+          <Overview
+            hasQueries={hasQueries}
+            isIntentions
+            recentlyOnline={recentlyOnline}
+            next={next}
+            setNominators={dispatchNominators}
+            stakingOverview={stakingOverview}
+          />
         </Route>
       </Switch>
       <Actions
+        allRewards={allRewards}
         allStashes={allStashes}
         isVisible={pathname === `${basePath}/actions`}
-        recentlyOnline={recentlyOnline}
         next={next}
         stakingOverview={stakingOverview}
       />
       <Overview
+        className={basePath === pathname ? '' : 'staking--hidden'}
         hasQueries={hasQueries}
-        isVisible={[basePath, `${basePath}/waiting`].includes(pathname)}
         recentlyOnline={recentlyOnline}
         next={next}
         setNominators={dispatchNominators}
@@ -124,13 +148,9 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
   );
 }
 
-export default styled(StakingApp)`
+export default React.memo(styled(StakingApp)`
   .staking--hidden {
     display: none;
-  }
-
-  .staking--queryInput {
-    margin-bottom: 1.5rem;
   }
 
   .staking--Chart h1 {
@@ -140,4 +160,4 @@ export default styled(StakingApp)`
   .staking--Chart+.staking--Chart {
     margin-top: 1.5rem;
   }
-`;
+`);

@@ -55,7 +55,7 @@ export default css`
   .ui.input {
     width: 100%;
 
-    &.disabled {
+    &.disabled:not(.retain-appearance) {
       opacity: 1;
 
       input {
@@ -99,7 +99,7 @@ export default css`
   }
 
   .ui.modal {
-    background: #fafafa;
+    background: #f9f9f9;
     color: #4e4e4e;
     font-family: sans-serif;
 

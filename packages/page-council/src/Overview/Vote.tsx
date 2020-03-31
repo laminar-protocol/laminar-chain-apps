@@ -1,20 +1,18 @@
-// Copyright 2017-2020 @polkadot/ui-staking authors & contributors
+// Copyright 2017-2020 @polkadot/app-council authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ApiProps } from '@polkadot/react-api/types';
 import { AccountId, VoteIndex } from '@polkadot/types/interfaces';
-import { Codec } from '@polkadot/types/types';
 import { ComponentProps } from './types';
 
 import BN from 'bn.js';
 import React from 'react';
 import { withApi } from '@polkadot/react-api/hoc';
-import { InputAddressMulti, Button } from '@polkadot/react-components';
+import { Button, InputAddressMulti, VoteValue } from '@polkadot/react-components';
 import TxModal, { TxModalState, TxModalProps } from '@polkadot/react-components/TxModal';
 
 import translate from '../translate';
-import VoteValue from './VoteValue';
 
 interface Props extends ApiProps, ComponentProps, TxModalProps {}
 
@@ -58,23 +56,27 @@ class Vote extends TxModal<Props, State> {
   }
 
   protected isDisabled = (): boolean => {
-    const { accountId, votes } = this.state;
+    const { accountId, votes, voteValue } = this.state;
 
-    return !accountId || votes.length === 0;
+    return !accountId || votes.length === 0 || voteValue.lten(0);
   }
 
   protected renderTrigger = (): React.ReactNode => {
-    const { electionsInfo: { candidates, members, runnersUp }, t } = this.props;
-    const available = members
-      .map(([accountId]): AccountId => accountId)
-      .concat(runnersUp.map(([accountId]): AccountId => accountId))
-      .concat(candidates);
+    let available: AccountId[] = [];
+
+    if (this.props.electionsInfo) {
+      const { electionsInfo: { candidates, members, runnersUp } } = this.props;
+
+      available = members
+        .map(([accountId]): AccountId => accountId)
+        .concat(runnersUp.map(([accountId]): AccountId => accountId))
+        .concat(candidates);
+    }
 
     return (
       <Button
         isDisabled={available.length === 0}
-        isPrimary
-        label={t('Vote')}
+        label={this.props.t('Vote')}
         icon='check'
         onClick={this.showModal}
       />
@@ -82,6 +84,10 @@ class Vote extends TxModal<Props, State> {
   }
 
   protected renderContent = (): React.ReactNode => {
+    if (!this.props.electionsInfo) {
+      return null;
+    }
+
     const { electionsInfo: { candidates, members, runnersUp }, t } = this.props;
     const { accountId, votes } = this.state;
     const available = members
@@ -97,11 +103,12 @@ class Vote extends TxModal<Props, State> {
         />
         <InputAddressMulti
           available={available}
-          help={t('Filter available candidates based on name, address or short account index.')}
-          label={t('filter candidates')}
+          availableLabel={t('council candidates')}
+          help={t('Select and order council candidates you wish to vote for.')}
           maxCount={MAX_VOTES}
           onChange={this.onChangeVotes}
           value={votes}
+          valueLabel={t('my ordered votes')}
         />
       </>
     );
@@ -117,9 +124,13 @@ class Vote extends TxModal<Props, State> {
     this.setState({ accountId });
 
     if (accountId) {
-      (api.query.electionsPhragmen || api.query.elections)
-        .votesOf<[AccountId[]] & Codec>(accountId)
-        .then(([existingVotes]): void => {
+      api.derive.council
+        .votesOf(accountId)
+        .then(({ votes }): void => {
+          if (!this.props.electionsInfo) {
+            return;
+          }
+
           const { electionsInfo: { candidates, members, runnersUp } } = this.props;
           const available = members
             .map(([accountId]): string => accountId.toString())
@@ -127,7 +138,7 @@ class Vote extends TxModal<Props, State> {
             .concat(candidates.map((accountId): string => accountId.toString()));
 
           this.setState({
-            votes: existingVotes
+            votes: votes
               .map((accountId): string => accountId.toString())
               .filter((accountId): boolean => available.includes(accountId))
           });

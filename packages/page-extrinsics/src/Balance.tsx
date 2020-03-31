@@ -5,7 +5,7 @@
 import { BareProps } from '@polkadot/react-api/types';
 
 import React from 'react';
-import { DerivedBalancesAll } from '@polkadot/api-derive/types';
+import { DeriveBalancesAll } from '@polkadot/api-derive/types';
 import { InputBalance } from '@polkadot/react-components';
 import { useApi, useCall } from '@polkadot/react-hooks';
 
@@ -14,9 +14,9 @@ interface Props extends BareProps {
   params?: any;
 }
 
-export default function BalanceDisplay ({ className, label, params, style }: Props): React.ReactElement<Props> {
+function BalanceDisplay ({ className, label, params, style }: Props): React.ReactElement<Props> {
   const { api } = useApi();
-  const allBalances = useCall<DerivedBalancesAll>(api.derive.balances.all as any, [params]);
+  const allBalances = useCall<DeriveBalancesAll>(api.derive.balances.all as any, [params]);
 
   return (
     <InputBalance
@@ -28,3 +28,5 @@ export default function BalanceDisplay ({ className, label, params, style }: Pro
     />
   );
 }
+
+export default React.memo(BalanceDisplay);

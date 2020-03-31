@@ -4,12 +4,11 @@
 
 import { Option } from '@polkadot/apps-config/settings/types';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import store from 'store';
 import { availableEndpoints } from '@polkadot/apps-config/settings';
 import { Dropdown, Input, Toggle } from '@polkadot/react-components';
-import uiSettings, { ICON_DEFAULT, PREFIX_DEFAULT } from '@polkadot/ui-settings';
+import uiSettings from '@polkadot/ui-settings';
 
 import { useTranslation } from './translate';
 import { createOption } from './util';
@@ -27,23 +26,6 @@ interface StateUrl {
 interface State extends StateUrl {
   isCustom: boolean;
 }
-
-const hijackSettings = (): void => {
-  const ENDPOINT_DEFAULT = 'wss://testnet-node-1.laminar-chain.laminar.one/ws';
-  const ENDPOINTS = [
-    { text: 'Laminar Testnet 1', value: ENDPOINT_DEFAULT, info: 'substrate' },
-    { text: 'Laminar Testnet 2', value: 'wss://node-6636393196323627008.jm.onfinality.io/ws?apikey=20cf0fa0-c7ee-4545-8227-4d488f71c6d2', info: 'substrate' },
-    { text: 'Local Node (127.0.0.1:9944)', value: 'ws://127.0.0.1:9944/', info: 'substrate' }
-  ];
-  const storedSettings = store.get('settings') || {};
-  const anySettings = uiSettings as any;
-  anySettings._apiUrl = storedSettings.apiUrl || ENDPOINT_DEFAULT;
-  anySettings._prefix = storedSettings.prefix || PREFIX_DEFAULT;
-  anySettings._icon = storedSettings.icon || ICON_DEFAULT;
-  Object.defineProperty(anySettings, 'availableNodes', { value: ENDPOINTS });
-};
-
-hijackSettings();
 
 // check the validity of the url
 function isValidUrl (url: string): boolean {
@@ -67,12 +49,14 @@ function makeUrl (_url: string): StateUrl {
 // validation on-top of the values retrieved
 function getInitialState (): State {
   const url = uiSettings.get().apiUrl;
-  const isCustom = availableEndpoints.reduce((isCustom: boolean, { value }): boolean => {
-    return isCustom && value !== url;
-  }, true);
-  const isValid = isValidUrl(url);
 
-  return { isCustom, isValid, url };
+  return {
+    isCustom: availableEndpoints.reduce((isCustom: boolean, { value }): boolean => {
+      return isCustom && value !== url;
+    }, true),
+    isValid: isValidUrl(url),
+    url
+  };
 }
 
 function SelectUrl ({ className, onChange }: Props): React.ReactElement<Props> {
@@ -82,25 +66,32 @@ function SelectUrl ({ className, onChange }: Props): React.ReactElement<Props> {
   const help = t('Select the remote endpoint, either from the dropdown on manual entered via the custom toggle');
   const label = t('remote node/endpoint to connect to');
   const translatedEndpoints = useMemo(() => {
-    return availableEndpoints.map((option): Option => createOption(t, option, ['local']));
+    return availableEndpoints.map((option): Option | React.ReactNode => createOption(t, option, ['local']));
   }, [t]);
 
   useEffect((): void => {
-    if (onChange && info.isValid) {
-      onChange(info.url);
-    }
+    onChange && info.isValid && onChange(info.url);
+  // the issue here is that the onChange callback changes each and every render... so Houston, we have
+  // a desperate issue here :(
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [info]);
 
-  const _onChangeUrl = (url: string): void => setInfo({ ...info, ...makeUrl(url) });
-  const _onChangeCustom = (isCustom: boolean): void =>
-    setInfo({
+  const _onChangeUrl = useCallback(
+    (url: string): void =>
+      setInfo((info: State) => ({ ...info, ...makeUrl(url) })),
+    []
+  );
+  const _onChangeCustom = useCallback(
+    (isCustom: boolean): void => setInfo({
       ...makeUrl(
         isCustom
           ? info.url
-          : availableEndpoints[0].value as string
+          : (availableEndpoints.find(({ value }) => !!value) || { value: 'ws://127.0.0.1:9944' }).value as string
       ),
       isCustom
-    });
+    }),
+    [info]
+  );
 
   return (
     <div className={className}>
@@ -131,7 +122,7 @@ function SelectUrl ({ className, onChange }: Props): React.ReactElement<Props> {
   );
 }
 
-export default styled(SelectUrl)`
+export default React.memo(styled(SelectUrl)`
   position: relative;
 
   .settings--customToggle {
@@ -139,4 +130,4 @@ export default styled(SelectUrl)`
     top: .5rem;
     right: 3.5rem;
   }
-`;
+`);

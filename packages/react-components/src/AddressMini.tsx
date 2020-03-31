@@ -92,7 +92,7 @@ function AddressMini ({ balance, bonded, children, className, iconInfo, isPadded
   );
 }
 
-export default styled(AddressMini)`
+export default React.memo(styled(AddressMini)`
   display: inline-block;
   padding: 0 0.25rem 0 1rem;
   text-align: left;
@@ -100,7 +100,7 @@ export default styled(AddressMini)`
 
   &.padded {
     display: inline-block;
-    padding: 0.25rem 1rem 0 0;
+    padding: 0 1rem 0 0;
   }
 
   &.summary {
@@ -166,4 +166,4 @@ export default styled(AddressMini)`
     position: relative;
     vertical-align: middle;
   }
-`;
+`);

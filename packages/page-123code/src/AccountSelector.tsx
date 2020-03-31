@@ -15,7 +15,10 @@ interface Props {
 function AccountSelector ({ className, onChange }: Props): React.ReactElement<Props> {
   const [accountId, setAccountId] = useState<string | null>(null);
 
-  useEffect((): void => onChange(accountId), [accountId]);
+  useEffect(
+    (): void => onChange(accountId),
+    [accountId, onChange]
+  );
 
   return (
     <section className={`template--AccountSelector ui--row ${className}`}>
@@ -40,10 +43,10 @@ function AccountSelector ({ className, onChange }: Props): React.ReactElement<Pr
   );
 }
 
-export default styled(AccountSelector)`
+export default React.memo(styled(AccountSelector)`
   align-items: flex-end;
 
   .summary {
     text-align: center;
   }
-`;
+`);

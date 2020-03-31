@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DerivedCollectiveProposal } from '@polkadot/api-derive/types';
+import { DeriveCollectiveProposal } from '@polkadot/api-derive/types';
 import { ProposalIndex, Hash } from '@polkadot/types/interfaces';
 
 import React, { useEffect, useState } from 'react';
@@ -13,7 +13,7 @@ import { isBoolean } from '@polkadot/util';
 import { useTranslation } from '../translate';
 
 interface Props {
-  councilProposals: DerivedCollectiveProposal[];
+  councilProposals: DeriveCollectiveProposal[];
   isDisabled?: boolean;
 }
 
@@ -22,7 +22,7 @@ interface Option {
   value: number;
 }
 
-export default function Voting ({ councilProposals, isDisabled }: Props): React.ReactElement<Props> | null {
+function Voting ({ councilProposals, isDisabled }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
   const { hasAccounts } = useAccounts();
   const [councilOpts, setCouncilOpts] = useState<Option[]>([]);
@@ -106,3 +106,5 @@ export default function Voting ({ councilProposals, isDisabled }: Props): React.
     </>
   );
 }
+
+export default React.memo(Voting);

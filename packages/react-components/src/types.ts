@@ -6,11 +6,11 @@ import { WithTranslation } from 'react-i18next';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { Abi } from '@polkadot/api-contract';
 import { ActionStatus } from '@polkadot/react-components/Status/types';
-import { InputAddressProps } from '@polkadot/react-components/InputAddress/types';
 import { TxState } from '@polkadot/react-hooks/types';
 import { IExtrinsic } from '@polkadot/types/types';
 import { AccountId, Index } from '@polkadot/types/interfaces';
 import { ButtonProps, Button$Sizes } from './Button/types';
+import { InputAddressProps } from './InputAddress/types';
 import { TxCallback, TxFailedCallback } from './Status/types';
 
 export type VoidFn = () => void;
@@ -58,6 +58,7 @@ export interface TxButtonProps extends TxProps {
   iconSize?: Button$Sizes;
   isBasic?: boolean;
   isDisabled?: boolean;
+  isIcon?: boolean;
   isNegative?: boolean;
   isPrimary?: boolean;
   isUnsigned?: boolean;
@@ -68,7 +69,7 @@ export interface TxButtonProps extends TxProps {
   onStart?: VoidFn;
   onSuccess?: TxCallback;
   onUpdate?: TxCallback;
-  size?: string;
+  size?: Button$Sizes;
   tooltip?: string;
   withSpinner?: boolean;
 }

@@ -4,7 +4,6 @@
 
 import { createGlobalStyle } from 'styled-components';
 
-import media from '../media';
 import cssComponents from './components';
 import cssForm from './form';
 import cssMedia from './media';
@@ -12,7 +11,84 @@ import cssRx from './rx';
 import cssSemantic from './semantic';
 import cssTheme from './theme';
 
-export default createGlobalStyle`
+interface Props {
+  uiHighlight?: string;
+}
+
+const defaultHighlight = '#f19135'; // #999
+
+export default createGlobalStyle<Props>`
+  .ui--highlight--all {
+    background: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+    border-color: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+    color: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+  }
+
+  .ui--highlight--bg {
+    background: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+  }
+
+  .ui--highlight--border {
+    /* .theme--default .ui.menu.tabular > .item.active */
+    border-color: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+  }
+
+  .ui--highlight--color {
+    color: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+  }
+
+  .ui--highlight--fill {
+    fill: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+  }
+
+  .ui--highlight--gradient {
+    background: ${(props): string => `linear-gradient(90deg, ${props.uiHighlight}, transparent)`};
+  }
+
+  .ui--highlight--icon {
+    i.icon {
+      color: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+    }
+  }
+
+  .ui--highlight--stroke {
+    stroke: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+  }
+
+  .theme--default {
+    .ui.menu.tabular .item.active {
+      border-color: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+    }
+
+    .ui.blue.progress > .bar {
+      background-color: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+    }
+
+    .ui.negative.button,
+    .ui.buttons .negative.button {
+      background: #666 !important;
+    }
+
+    .ui.primary.button,
+    .ui.buttons .primary.button {
+      background: ${(props): string => (props.uiHighlight || defaultHighlight)};
+
+      &.active,
+      &:active,
+      &:focus,
+      &:hover {
+        background-color: ${(props): string => (props.uiHighlight || defaultHighlight)};
+      }
+    }
+
+    .ui.toggle.checkbox {
+      input:checked~.box:before,
+      input:checked~label:before {
+        background-color: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+      }
+    }
+  }
+
   #root {
     color: #4e4e4e;
     font-family: sans-serif;
@@ -45,9 +121,11 @@ export default createGlobalStyle`
         color: #555 !important;
       }
 
-      .ui.toggle.checkbox input:checked~.box:before,
-      .ui.toggle.checkbox input:checked~label:before {
-        background-color: #eee !important;
+      .ui.toggle.checkbox {
+        input:checked~.box:before,
+        input:checked~label:before {
+          background-color: #eee !important;
+        }
       }
 
       .ui.button.mini {
@@ -132,17 +210,13 @@ export default createGlobalStyle`
     }
   }
 
-  h3, h4, h5 {
+  h1, h2, h3, h4, h5 {
     margin-bottom: 0.25rem;
   }
 
   header {
-    margin-bottom: 1.4rem;
+    margin-bottom: 1.5rem;
     text-align: center;
-
-    ${media.TABLET`
-      margin-bottom: 2rem;
-   `}
 
     > article {
       background: transparent;

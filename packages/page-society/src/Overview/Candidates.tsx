@@ -16,32 +16,33 @@ interface Props extends OwnMembers {
   className?: string;
 }
 
-export default function Candidates ({ allMembers, className, isMember, ownMembers }: Props): React.ReactElement<Props> {
+function Candidates ({ allMembers, className, isMember, ownMembers }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const candidates = useCall<DeriveSocietyCandidate[]>(api.derive.society.candidates, []);
 
   return (
-    <div className={`overviewSection ${className}`}>
-      <h1>{t('candidates')}</h1>
-      {candidates?.length
-        ? (
-          <Table>
-            <Table.Body>
-              {candidates.map((candidate): React.ReactNode => (
-                <Candidate
-                  allMembers={allMembers}
-                  isMember={isMember}
-                  key={candidate.accountId.toString()}
-                  ownMembers={ownMembers}
-                  value={candidate}
-                />
-              ))}
-            </Table.Body>
-          </Table>
-        )
-        : t('No candidates')
-      }
-    </div>
+    <Table className={className}>
+      <Table.Head>
+        <th className='start'><h1>{t('candidates')}</h1></th>
+        <th>{t('kind')}</th>
+        <th>{t('value')}</th>
+        <th className='start'>{t('votes')}</th>
+        <th>&nbsp;</th>
+      </Table.Head>
+      <Table.Body empty={candidates && t('No candidates')}>
+        {candidates?.map((candidate): React.ReactNode => (
+          <Candidate
+            allMembers={allMembers}
+            isMember={isMember}
+            key={candidate.accountId.toString()}
+            ownMembers={ownMembers}
+            value={candidate}
+          />
+        ))}
+      </Table.Body>
+    </Table>
   );
 }
+
+export default React.memo(Candidates);

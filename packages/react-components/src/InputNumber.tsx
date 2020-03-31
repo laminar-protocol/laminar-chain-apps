@@ -22,6 +22,7 @@ interface Props extends BareProps {
   autoFocus?: boolean;
   bitLength?: BitLength;
   defaultValue?: BN | string;
+  defaultSi?: SiDef;
   help?: React.ReactNode;
   isDisabled?: boolean;
   isError?: boolean;
@@ -110,22 +111,26 @@ function inputToBn (input: string, si: SiDef | null, props: Props): [BN, boolean
   const [siPower, basePower, siUnitPower] = getSiPowers(si);
 
   // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
-  const isDecimalValue = input.match(/^(\d+)\.(\d+)$/);
+  const decimalMatch = input.match(/^(\d+)[.,](\d+)$/);
 
   let result;
 
-  if (isDecimalValue) {
-    if (siUnitPower - isDecimalValue[2].length < -basePower) {
+  if (decimalMatch) {
+    const intString = decimalMatch[1];
+    const fractionString = decimalMatch[2];
+    if (siUnitPower - fractionString.length < -basePower) {
       result = new BN(-1);
     }
 
-    const div = new BN(input.replace(/\.\d*$/, ''));
-    const modString = input.replace(/^\d+\./, '');
-    const mod = new BN(modString);
+    const div = new BN(intString);
+    const mod = new BN(fractionString);
 
-    result = div
-      .mul(TEN.pow(siPower))
-      .add(mod.mul(TEN.pow(new BN(basePower + siUnitPower - modString.length))));
+    // multiply whole number part with 10^SI
+    const divMul = div.mul(TEN.pow(new BN(siUnitPower)));
+    // multiply the fractional part with 10^(SI-length)
+    const modMul = mod.mul(TEN.pow(new BN(siUnitPower - fractionString.length)));
+
+    result = divMul.add(modMul);
   } else {
     result = new BN(input.replace(/[^\d]/g, ''))
       .mul(TEN.pow(siPower));
@@ -193,9 +198,9 @@ function isNewPropsValue (propsValue: BN | string, value: string, valueBn: BN): 
   return BN.isBN(propsValue) ? !propsValue.eq(valueBn) : propsValue !== value;
 }
 
-export default function InputNumber (props: Props): React.ReactElement<Props> {
+function InputNumber (props: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const { bitLength = DEFAULT_BITLENGTH, className, defaultValue = ZERO, help, isDecimal, isFull, isSi, isDisabled, isError = false, maxLength, maxValue, onChange, onEnter, onEscape, placeholder, style, value: propsValue } = props;
+  const { bitLength = DEFAULT_BITLENGTH, className, defaultValue = ZERO, defaultSi, help, isDecimal, isFull, isSi, isDisabled, isError = false, maxLength, maxValue, onChange, onEnter, onEscape, placeholder, style, value: propsValue } = props;
 
   const [si, setSi] = useState<SiDef | null>(isSi ? formatBalance.findSi('-') : null);
   const [isPreKeyDown, setIsPreKeyDown] = useState(false);
@@ -205,18 +210,20 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
   );
 
   useEffect((): void => {
-    if (propsValue && isNewPropsValue(propsValue, value, valueBn)) {
-      setValues(getValues(propsValue, si, props));
-    }
+    propsValue && isNewPropsValue(propsValue, value, valueBn) && setValues(getValues(propsValue, si, props));
+  // ummmm...
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propsValue]);
 
   useEffect((): void => {
     setValues(getValues(value, si, props));
+  // ummmm...
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, si, bitLength, maxValue]);
 
   useEffect((): void => {
     onChange && onChange(valueBn);
-  }, [valueBn]);
+  }, [onChange, valueBn]);
 
   const _onChange = (input: string): void => {
     setValues(getValuesFromString(input, si, props));
@@ -252,6 +259,11 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
     }
   };
 
+  useEffect((): void => {
+    if (defaultSi) {
+      setSi(defaultSi);
+    }
+  }, [defaultSi]);
   const _onSelectSiUnit = (siUnit: string): void => {
     setSi(formatBalance.findSi(siUnit));
   };
@@ -292,7 +304,7 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
           {t('Max')}
         </Button>
       ) */}
-      {!!si && (
+      {isSi && !!si && (
         <Dropdown
           dropdownClassName='ui--SiDropdown'
           isButton
@@ -304,3 +316,5 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
     </Input>
   );
 }
+
+export default React.memo(InputNumber);

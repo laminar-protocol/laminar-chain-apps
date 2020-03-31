@@ -23,7 +23,7 @@ function filterContracts (api: ApiPromise, { accounts, contracts: keyringContrac
     .filter((contract: ApiContract | null): boolean => !!contract) as ApiContract[];
 }
 
-export default function Contracts (props: Props): React.ReactElement<Props> {
+function Contracts (props: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { accounts, basePath, contracts: keyringContracts, hasCode, showDeploy } = props;
@@ -35,13 +35,9 @@ export default function Contracts (props: Props): React.ReactElement<Props> {
 
   useEffect((): void => {
     setContracts(filterContracts(api, props));
-  }, [accounts, api, keyringContracts]);
+  }, [accounts, api, keyringContracts, props]);
 
-  let callContract = contracts[callContractIndex] || null;
-
-  useEffect((): void => {
-    callContract = contracts[callContractIndex];
-  }, [callContractIndex]);
+  const callContract = contracts[callContractIndex] || null;
 
   const _toggleAdd = (): void => setIsAddOpen(!isAddOpen);
   const _toggleCall = (): void => setIsCallOpen(!isCallOpen);
@@ -79,7 +75,6 @@ export default function Contracts (props: Props): React.ReactElement<Props> {
               <>
                 <Button
                   icon='cloud upload'
-                  isPrimary
                   label={t('Deploy a code hash')}
                   onClick={showDeploy()}
                 />
@@ -88,7 +83,6 @@ export default function Contracts (props: Props): React.ReactElement<Props> {
             )}
             <Button
               icon='add'
-              isPrimary
               label={t('Add an existing contract')}
               onClick={_toggleAdd}
             />
@@ -120,3 +114,5 @@ export default function Contracts (props: Props): React.ReactElement<Props> {
     </>
   );
 }
+
+export default React.memo(Contracts);
