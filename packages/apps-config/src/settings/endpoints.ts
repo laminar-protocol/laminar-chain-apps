@@ -24,6 +24,11 @@ if (process.env.WS_URL) {
 
 const LIVE: Option[] = [
   {
+    info: 'Laminar',
+    text: 'Laminar Testnet',
+    value: 'wss://dev-node.laminar-chain.laminar.one/ws'
+  },
+  {
     info: 'kusama',
     text: 'Kusama (Polkadot Canary, hosted by Parity)',
     value: 'wss://kusama-rpc.polkadot.io/'
