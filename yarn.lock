@@ -1249,7 +1249,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.0, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.0, @babel/runtime@npm:^7.8.3, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.4.0, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.0, @babel/runtime@npm:^7.8.4":
   version: 7.8.4
   resolution: "@babel/runtime@npm:7.8.4"
   dependencies:
@@ -1670,32 +1670,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@laminar/api@npm:beta":
-  version: 0.2.0-beta.21
-  resolution: "@laminar/api@npm:0.2.0-beta.21"
+"@laminar/api@npm:^0.2.0-beta.37":
+  version: 0.2.0-beta.37
+  resolution: "@laminar/api@npm:0.2.0-beta.37"
   dependencies:
     "@babel/runtime": ^7.8.0
-    "@laminar/types": beta
-    "@orml/api-derive": beta
-    "@orml/jsonrpc": beta
-    "@polkadot/api": beta
-    flow-protocol-ethereum: laminar-protocol/flow-protocol-ethereum
+    "@laminar/types": ^0.2.0-beta.37
+    "@orml/api-derive": ^0.2.0-beta.63
+    "@polkadot/api": ^1.9.0-beta.22
+    flow-protocol-ethereum: "github:laminar-protocol/flow-protocol-ethereum#0.0.2"
     web3: 1.2.6
     web3-core: 1.2.6
     web3-eth-contract: 1.2.6
     web3-utils: 1.2.6
-  checksum: 2/a5318c16161a1ffec8c69072540fb6f13053cfb98daf06b0c4fbacb41da9bb7b5aa19c63c574b951dcc02847ba146bfd065f4fdbf69d1a030c6e55593538fc5e
+  checksum: 2/742b467b0af5e1612f348bd375ecf89120577745e9641423a4d286ec6aee672d1e2de0f385cbd3d22d0dac547528f564c58bd2f8d3a6a99b04ac109d749978a6
   languageName: node
   linkType: hard
 
-"@laminar/types@npm:beta":
-  version: 0.2.0-beta.21
-  resolution: "@laminar/types@npm:0.2.0-beta.21"
+"@laminar/types@npm:^0.2.0-beta.37":
+  version: 0.2.0-beta.37
+  resolution: "@laminar/types@npm:0.2.0-beta.37"
   dependencies:
     "@babel/runtime": ^7.8.0
-    "@orml/types": beta
-    "@polkadot/api": beta
-  checksum: 2/f8e80a4fdf3bd3297f7535676446f6dbe01163a6db78a499e7345b6b3435b0ff25c97688c733a48152ea898731b165de7de59dff44321541baae8d45f15609fa
+    "@orml/types": ^0.2.0-beta.63
+    "@polkadot/typegen": ^1.9.0-beta.22
+    "@polkadot/types": ^1.9.0-beta.22
+  checksum: 2/2d8592d43028796f5b7d9689a6e9ba16685f514d6062b7e48300408f2b39c9ae778dbe724be7f853574dca7ea2eadabfd023a44f679e7271421e7f16f5e08cc4
   languageName: node
   linkType: hard
 
@@ -2784,32 +2784,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@orml/api-derive@npm:beta":
-  version: 0.2.0-beta.23
-  resolution: "@orml/api-derive@npm:0.2.0-beta.23"
+"@orml/api-derive@npm:^0.2.0-beta.63":
+  version: 0.2.0-beta.63
+  resolution: "@orml/api-derive@npm:0.2.0-beta.63"
   dependencies:
-    "@polkadot/api": beta
+    "@polkadot/api": ^1.9.0-beta.22
     memoizee: ^0.4.14
-  checksum: 2/b84be7c1a6cf2e069e59995682ab3b9d8107d45999a9b9272f00116462349317cc79548b766240ac21c5fd6f38109e2955a74951de613300d8b96001943525cd
+  checksum: 2/afdb387c020d8035b92647051419b489dfdcbb73b1a2a93e4147128d593558a4bca1515e3921b858f43482313fc4875a6e75da979a3980bb88bb25b64cc9891a
   languageName: node
   linkType: hard
 
-"@orml/jsonrpc@npm:beta":
-  version: 0.2.0-beta.23
-  resolution: "@orml/jsonrpc@npm:0.2.0-beta.23"
-  dependencies:
-    "@babel/runtime": ^7.8.3
-    "@polkadot/api": beta
-  checksum: 2/3d4cae308289497c0219f73768ec5a52909f252f46154d7907cb9cd283e73c3cb86b21c54f0a84c2c843ff20d054fd13c58d3dcfc7e0e49746fe3f401ce0e5e2
-  languageName: node
-  linkType: hard
-
-"@orml/types@npm:beta":
-  version: 0.2.0-beta.23
-  resolution: "@orml/types@npm:0.2.0-beta.23"
+"@orml/types@npm:^0.2.0-beta.63":
+  version: 0.2.0-beta.63
+  resolution: "@orml/types@npm:0.2.0-beta.63"
   dependencies:
     "@babel/runtime": ^7.8.4
-  checksum: 2/8810ff114d343710df7c936fd20e7a5b8946a416a27acfb83ad6c7b5ff8fde73b937ec1b1571d81f04de8acc41acb7cf2f1bf0111c73d744a4dcc37dc3ebab3b
+    "@polkadot/typegen": ^1.9.0-beta.22
+  peerDependencies:
+    "@polkadot/api": ^1.9.0-beta.22
+    "@polkadot/typegen": ^1.9.0-beta.22
+  checksum: 2/ef24d9d7c2e8dcd6cd71b8f5fa9464fb38294db143bbd68d4279dbf5762cb703737c2cae77615fb22d764a7a324685478c72d4817a4540a3ae9a403f0f83bce6
   languageName: node
   linkType: hard
 
@@ -3263,7 +3257,7 @@ __metadata:
   resolution: "@polkadot/react-api@workspace:packages/react-api"
   dependencies:
     "@babel/runtime": ^7.8.4
-    "@laminar/api": beta
+    "@laminar/api": ^0.2.0-beta.37
     "@polkadot/api": ^1.5.0-beta.22
     "@polkadot/extension-dapp": ^0.22.0-beta.10
     rxjs-compat: ^6.5.4
@@ -10089,10 +10083,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-flow-protocol-ethereum@laminar-protocol/flow-protocol-ethereum:
+"flow-protocol-ethereum@github:laminar-protocol/flow-protocol-ethereum#0.0.2":
   version: 0.0.2
-  resolution: "flow-protocol-ethereum@laminar-protocol/flow-protocol-ethereum#commit:aa4fa650c05fc2a885a8461ee87f40c55976146c"
-  checksum: 2/a159236a9291d4f402e78a2afc6aa5a622c3a7c904cb596e7ab01091cc410d0cd915a6e04ae9b4b45b2d074b3a54c7c1e4e058e24bf7dff213a3566cef613ac4
+  resolution: "flow-protocol-ethereum@github:laminar-protocol/flow-protocol-ethereum#commit:583891bdebc18928a78ae3e903dd1e371300afbe"
+  checksum: 2/780f337339c240e0feb90cf0cbcf8aebe221a5a4c0431466f7d8dcc78018c889bd10249afff7fb6130b3e58224f7ad280e02cc45f38308590d042e21404f6858
   languageName: node
   linkType: hard
 
