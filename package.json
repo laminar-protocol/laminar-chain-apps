@@ -112,5 +112,9 @@
     "webpack-cli": "^3.3.11",
     "webpack-merge": "^4.2.2",
     "webpack-plugin-serve": "^1.0.1"
+  },
+  "dependencies": {
+    "@laminar/api": "0.2.0-beta.107",
+    "@laminar/types": "0.2.0-beta.107"
   }
 }

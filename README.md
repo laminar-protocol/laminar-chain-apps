@@ -1,16 +1,10 @@
-[![polkadotjs](https://img.shields.io/badge/polkadot-js-orange?style=flat-square)](https://polkadot.js.org)
-![license](https://img.shields.io/badge/License-Apache%202.0-blue?logo=apache&style=flat-square)
-[![maintainability](https://img.shields.io/codeclimate/maintainability-percentage/polkadot-js/apps?logo=code-climate&style=flat-square)](https://codeclimate.com/github/polkadot-js/apps)
+# LaminarChain Console
+A Portal into the LaminarChain. Provides a view and interaction layer from a browser.
 
-# @polkadot/apps
+This can be accessed as a hosted application via [https://laminar-protocol.github.io/laminar-chain-apps/](https://laminar-protocol.github.io/laminar-chain-apps).
 
-A Portal into the Polkadot and Substrate networks. Provides a view and interaction layer from a browser.
+This is a fork from [@polkadot/apps](https://github.com/polkadot-js/apps).
 
-This can be accessed as a hosted application via https://polkadot.js.org/apps/ or you can access the IPFS hosted version via https://polkadot.js.org/apps/ipfs (via hash) or https://dotapps.io (via ipns) to explore any of the supported Polkadot and Substrate chains.
-
-If you run one or more IPFS node(s), pinning the UI (which only getes updated on releases) will make it faster for you and others. You can find details about that below in the IPFS chapter below.
-
-**Important** If you are a chain developer and would like to add support for your chain to the UI, all the local configuration (API types, settings, logos) can be customized in [the apps-config package](packages/apps-config#README.md), complete with instructions of what goes where.
 
 ## overview
 
@@ -96,7 +90,7 @@ curl -s https://polkadot.js.org/apps/ipfs/pin.json | jq -jr .IpfsHash | xargs -0
 
 I suggest to run the script once. The output should be similar to (the CID/Hash will very likely be different though):
 ```
-$ /usr/local/bin/polkadotjs-ipfs-pin.sh 
+$ /usr/local/bin/polkadotjs-ipfs-pin.sh
 pinned QmNYAbzaE8kRAf68YiN3ZuUxgdwroeav3JhicsHsG5b2oW recursively
 ```
 

@@ -9,7 +9,7 @@ import { DropdownOptions } from '../util/types';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useApi } from '@polkadot/react-hooks';
-import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
+import { allJSONRpc as jsonrpc } from '@laminar/types';
 
 import LinkedWrapper from '../InputExtrinsic/LinkedWrapper';
 import SelectMethod from './SelectMethod';

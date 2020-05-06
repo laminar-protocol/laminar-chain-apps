@@ -18,75 +18,22 @@ function createDev (t: <T= string> (key: string, text: string, options: { ns: st
   ];
 }
 
-function createLive (t: <T= string> (key: string, text: string, options: { ns: string }) => T): LinkOption[] {
+function createLive (): LinkOption[] {
   return [
-    {
-      dnslink: 'polkadot',
-      info: 'polkadot',
-      text: t<string>('rpc.polkadot.parity', 'Polkadot (Live, hosted by Parity)', { ns: 'apps-config' }),
-      value: 'wss://rpc.polkadot.io'
-    },
-    {
-      dnslink: 'polkadot',
-      info: 'polkadot',
-      text: t<string>('rpc.polkadot.w3f', 'Polkadot (Live, hosted by Web3 Foundation)', { ns: 'apps-config' }),
-      value: 'wss://cc1-1.polkadot.network'
-    },
-    {
-      dnslink: 'kusama',
-      info: 'kusama',
-      text: t<string>('rpc.kusama.parity', 'Kusama (Polkadot Canary, hosted by Parity)', { ns: 'apps-config' }),
-      value: 'wss://kusama-rpc.polkadot.io/'
-    },
-    {
-      dnslink: 'kusama',
-      info: 'kusama',
-      text: t<string>('rpc.kusama.w3f', 'Kusama (Polkadot Canary, hosted by Web3 Foundation)', { ns: 'apps-config' }),
-      value: 'wss://cc3-5.kusama.network/'
-    },
-    {
-      dnslink: 'kusama',
-      info: 'kusama',
-      text: t<string>('rpc.kusama.ava', 'Kusama (Polkadot Canary, user-run public nodes; see https://status.cloud.ava.do/)', { ns: 'apps-config' }),
-      value: 'wss://kusama.polkadot.cloud.ava.do/'
-    },
-    {
-      dnslink: 'edgeware',
-      info: 'edgeware',
-      text: t<string>('rpc.edgeware', 'Edgeware (Edgeware Mainnet, hosted by Commonwealth Labs)', { ns: 'apps-config' }),
-      value: 'wss://mainnet1.edgewa.re'
-    },
-    {
-      dnslink: 'kulupu',
-      info: 'substrate',
-      text: t<string>('rpc.kulupu', 'Kulupu (Kulupu Mainnet, hosted by Kulupu)', { ns: 'apps-config' }),
-      value: 'wss://rpc.kulupu.network/ws'
-    }
   ];
 }
 
-function createTest (t: <T= string> (key: string, text: string, options: { ns: string }) => T): LinkOption[] {
+function createTest (): LinkOption[] {
   return [
     {
-      dnslink: 'westend',
-      info: 'westend',
-      text: t<string>('rpc.westend', 'Westend (Polkadot Testnet, hosted by Parity)', { ns: 'apps-config' }),
-      value: 'wss://westend-rpc.polkadot.io'
+      info: 'Laminar',
+      text: 'Laminar Testnet node 1',
+      value: 'wss://testnet-node-1.laminar-chain.laminar.one/ws'
     },
     {
-      info: 'edgeware',
-      text: t<string>('rpc.berlin', 'Berlin (Edgeware Testnet, hosted by Commonwealth Labs)', { ns: 'apps-config' }),
-      value: 'wss://berlin1.edgewa.re'
-    },
-    {
-      info: 'substrate',
-      text: t<string>('rpc.flamingfir', 'Flaming Fir (Substrate Testnet, hosted by Parity)', { ns: 'apps-config' }),
-      value: 'wss://substrate-rpc.parity.io/'
-    },
-    {
-      info: 'nodle',
-      text: t<string>('rpc.arcadia', 'Arcadia (Nodle Testnet, hosted by Nodle)', { ns: 'apps-config' }),
-      value: 'wss://arcadia1.nodleprotocol.io/'
+      info: 'Laminar',
+      text: 'Laminar Dev Testnet',
+      value: 'wss://dev-node.laminar-chain.laminar.one/ws'
     }
   ];
 }
@@ -115,13 +62,13 @@ export default function create (t: <T= string> (key: string, text: string, optio
       text: t<string>('rpc.header.live', 'Live networks', { ns: 'apps-config' }),
       value: ''
     },
-    ...createLive(t),
+    ...createLive(),
     {
       isHeader: true,
       text: t<string>('rpc.header.test', 'Test networks', { ns: 'apps-config' }),
       value: ''
     },
-    ...createTest(t),
+    ...createTest(),
     {
       isHeader: true,
       text: t<string>('rpc.header.dev', 'Development', { ns: 'apps-config' }),

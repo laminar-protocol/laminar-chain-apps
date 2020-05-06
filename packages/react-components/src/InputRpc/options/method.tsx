@@ -7,7 +7,7 @@ import { DropdownOption, DropdownOptions } from '../../util/types';
 
 import React from 'react';
 import ApiPromise from '@polkadot/api/promise';
-import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
+import { allJSONRpc as jsonrpc } from '@laminar/types';
 
 export default function createOptions (api: ApiPromise, sectionName: string): DropdownOptions {
   const section = jsonrpc[sectionName];

@@ -9,7 +9,7 @@ import { DefinitionRpcExt } from '@polkadot/types/types';
 import React, { useCallback, useState } from 'react';
 import { Button, InputRpc } from '@polkadot/react-components';
 import Params from '@polkadot/react-params';
-import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
+import { allJSONRpc as jsonrpc } from '@laminar/types';
 import { getTypeDef } from '@polkadot/types';
 import { isNull } from '@polkadot/util';
 
