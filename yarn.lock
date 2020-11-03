@@ -1829,12 +1829,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@laminar/type-definitions@npm:^0.2.0-beta.141":
-  version: 0.2.0-beta.142
-  resolution: "@laminar/type-definitions@npm:0.2.0-beta.142"
+"@laminar/type-definitions@npm:^0.2.0-beta.143":
+  version: 0.2.0-beta.143
+  resolution: "@laminar/type-definitions@npm:0.2.0-beta.143"
   dependencies:
     "@open-web3/orml-type-definitions": ^0.6.0-beta.26
-  checksum: ff815a0679b019b6e0c44b3dc37621ccaecb85e5881740289be7ac476bd786b3a8925f5fff0a9efae19a562d5dfd009a61c4720cc0c8ea36d848f43b59fa08ba
+  checksum: aee1bb82e901b320abeb9bede01f7ebc640507f69438a31792505dabc6c3d0b7c9d7cd3001203e0c72b465308c4e1704c379d8d5d1fb98efcc05f5d79f1fe072
   languageName: node
   linkType: hard
 
@@ -2263,7 +2263,7 @@ __metadata:
     "@acala-network/type-definitions": ^0.4.0-beta.13
     "@babel/runtime": ^7.12.1
     "@edgeware/node-types": ^3.0.7
-    "@laminar/type-definitions": ^0.2.0-beta.141
+    "@laminar/type-definitions": ^0.2.0-beta.143
     "@polkadot/networks": ^3.7.1
     "@subsocial/types": ^0.4.7
   languageName: unknown
